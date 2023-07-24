@@ -1,0 +1,210 @@
+
+*,body,html {
+
+    margin:0;
+    padding:0;
+    font-family:'Montserrat' ;
+   
+}
+
+ .sec1-container{
+    height: 270px;
+    background: #2563EB;
+ }
+
+ .sec2-container{
+
+    margin: 1em;
+    background: #FFFFFF;
+  
+ }
+
+ h2{
+    font-weight:900;
+    font-size: 26px;
+    line-height: 32px;
+    color: #FFFFFF;
+    text-align: center;
+    padding-bottom: 0.2em; 
+ }
+
+ /* my css */
+ .inputcontainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2em auto;
+    padding:1em;
+    height: 620px;
+    width: 800px;
+    background: #EDEDED;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+  
+ }
+
+ .content{
+    margin: 10px 0;
+    width: 750px;
+    height: 400px;
+    font-size: 24px;
+ }
+
+
+ .postbtn{
+    width:135px ;
+    height: 60px;
+    background: #2563EB;
+    border-radius: 6px;
+    margin-top: 0.5em;
+    color:#FFFFFF ;
+    border-color:#2563EB ;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    margin-left:26em;
+   
+ }
+
+ .title{
+    Width :750px;
+    Height :30px;
+    font-weight: 900;
+    background: #FFFFFF;
+    border-radius: 6px;
+    margin-top: 0.5em;
+    border-style: none;
+    color:black;
+    margin: 10px 0;
+    font-size: 26px;
+ }
+
+ .files{
+    width: 750px;
+ }
+
+ #boardStatus{
+   Width :247px;
+   Height :30px;
+   background: #FFFFFF;
+   border-radius: 6px;
+   font-weight: 900;
+   margin-top: 0.5em;
+   margin-left: 0.3em;
+   border-style: none;
+} 
+ 
+/* ----------- */
+
+
+ .card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 500px;
+    width: 505px;
+    background: #FCFCFC;
+    border: 1px solid #EDEDED;
+    margin:2em auto;
+    padding:1em;
+    padding-right:1em;
+    padding-bottom: 2em;
+    border-radius: 6px;
+
+ }
+ .image-container{
+    margin:auto;
+    padding-left: .3em;
+ }
+
+ .image_post{
+   width: 505px;
+   height: 273px;
+   border-radius: 6px;
+   margin:auto;
+  }
+
+ .usertext{
+    Width :500px;
+    Height :80px;
+    border-radius: 6px;
+    background: #FFFFFF;
+    border-style:none;
+    font-weight: 900;
+    margin-top: 0.5em;
+    color:black;
+ }
+
+ .userimgurl{
+    Width :247px;
+    Height :30px;
+    background: #FFFFFF;
+    font-weight: 900;
+    border-radius: 6px;
+    margin-top: 0.5em;
+    border-style: none;
+    color:black;
+ }
+
+ .title_date_post{
+   display:flex;
+   width: 100%;
+   justify-content: space-between;
+   align-items: center;
+   padding:0.5em;
+}
+ .title_post{
+  
+   font-size:1em;
+   line-height: 22px;
+   font-weight:bold;
+   color:#000;
+   text-transform:capitalize;
+ }
+
+ .date{
+   width: 150px;
+   height: 23px;
+   font-size: 12px;
+   text-transform: capitalize;
+   /* color: #B8B8B9; */
+   color:black;
+   margin-left: 17em;
+ }
+
+.description_post{
+    width: 515px;
+    /* height: 70px; */
+    margin:auto;
+    /* margin-top: 1em; */
+  }
+
+  .description{
+    font: size 14px;
+    font-weight:400;
+    color:#000;
+    line-height:1.3em;
+    text-align: left;
+    justify-content:left;
+    margin-bottom: 4em;
+    padding:0.5em;
+}
+.category_post{
+   padding:0.5em;
+}
+.category{
+
+   width: 90px;
+   height: 28px;
+   font-size:0.8em;
+   margin-right:32em;
+   font-weight:bold;
+   text-transform:capitalize;
+   color:#2563EB;
+   /* padding:1em; */
+   background:transparent;
+   border: 2px solid #2563EB;
+   box-sizing: border-box;
+   border-radius: 4px;
+   padding-right:0.5em;
+}
