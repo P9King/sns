@@ -28,11 +28,12 @@ import { MulterModule } from '@nestjs/platform-express';
     }),
     AuthModule,
     BoardsModule,
-    MyPageModule,MulterModule.register({
+    MyPageModule,
+    MulterModule.register({
       dest: './src/public/uploads',
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
 })
-export class AppModule {}
+export class AppModule { }

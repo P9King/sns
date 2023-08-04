@@ -20,7 +20,7 @@ export class AuthService {
 
     //sign up
     async signup(userDto: UserDto): Promise<ReturnStatus> {
-        console.log(userDto);
+        console.log("service signup userdto",userDto);
         const takenEmail = await this.authRepository.findOne({ where: { email: userDto.email } });
         if (takenEmail) {
             return ReturnStatus.FAILURE;

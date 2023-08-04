@@ -1,8 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Users } from './users.entity';
+import { TimestampEntity } from './baseEntity/timestamp.entity';
+import { Files } from './files.entity';
 
 @Entity()
-export class Boards {
+export class Boards extends TimestampEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -18,13 +20,16 @@ export class Boards {
     @Column()
     file_attached: number;
 
-    
     @ManyToOne((type) => Users, (users)=> users.boards, { eager: true })
     users: Users;
+
+    @OneToMany(type => Files, files => files.boards, {cascade: true})
+    files: Array<Files>;
     
 }
 
 export enum BoardStatus{
     PRIVATE = "private",
-    PUBLIC = "public"
+    PUBLIC = "public",
+    DB_ERROR = "db_error"
 }

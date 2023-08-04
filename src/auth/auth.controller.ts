@@ -24,12 +24,4 @@ export class AuthController {
         return this.authService.login(userDto);
     }
 
-    @UseGuards(AuthGuard)
-    @Get()
-    test(@Req() request, @Request()req ){
-        const [type, token] = request.headers.authorization?.split(' ') ?? [];
-        console.log(type);
-        console.log(req.user);
-    }
-
 }

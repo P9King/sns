@@ -6,6 +6,7 @@ import { BoardsDto } from 'src/dtos/boardsDto';
 import { ReturnStatus } from 'src/enum.status';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { Files } from 'src/entities/files.entity';
 
 
 @Controller('api/boards')
@@ -20,69 +21,87 @@ export class BoardsController {
     @UseGuards(AuthGuard)
     @UseInterceptors(
         FilesInterceptor('file', 10, {
-          storage: diskStorage({
-            destination: '../../public/uploads', // Change the destination to your desired directory
-            filename: (req, file, cb) => {
-             const name = file.originalname.split('.')[0];
-             const extenstion = file.originalname.split('.')[1];
-             //const savedFileName = `${name}_${Date.now()}.${extenstion}}`;
-             const savedFileName = name.split('.').join("_") + "_" + Date.now() + "." + extenstion
-             cb(null, savedFileName);
-            },
-          }),
+            storage: diskStorage({
+                destination: '../front/public/images', // Change the destination to your desired directory
+                filename: (req, file, cb) => {
+                    const name = file.originalname.split('.')[0];
+                    const extenstion = file.originalname.split('.')[1];
+                    //const savedFileName = `${name}_${Date.now()}.${extenstion}}`;
+                    const savedFileName = name.split('.').join("_") + "_" + Date.now() + "." + extenstion
+                    cb(null, savedFileName);
+                },
+            }),
         }),
-      )
-    postBoard(@Body() boardsDto:BoardsDto, @Req() userInfo, @UploadedFiles() files: Array<Express.Multer.File>) {
-        console.log("controller postBoard",boardsDto.status);
+    )
+    postBoard(@Body() boardsDto: BoardsDto, @Req() userInfo, @UploadedFiles() files: Array<Express.Multer.File>) {
+        console.log("controller postBoard", boardsDto.status);
         console.log("co post board user", userInfo.user);
         console.log("postboard co", files);
         boardsDto.users = userInfo.user.id;
-        this.boardsService.postBoard(boardsDto, files);
+        return this.boardsService.postBoard(boardsDto, files);
+
     }
 
-
-
-
-    @Get('/getAllBoards')
+    @Get('getAllBoards')
     getAllPost() {
         return this.boardsService.getAllBoards();
     }
 
     //if you are not writter, readonly or not you can update
-    @UseGuards(AuthGuard)
-    @Get('getOneboard')
-    getOneBoard(@Query('boardNo') boardNo: number): Promise<Boards> {
-        console.log("co params", boardNo);
-        return this.boardsService.getOneBoard(boardNo);
-    }
+    // @UseGuards(AuthGuard)
+    // @Get('getOneboard')
+    // getOneBoard(@Query('boardId') boardId: number): Promise<Boards> {
+    //     console.log("co params", boardId);
+    //     return this.boardsService.getOneBoard(boardId);
+    // }
+
 
     @UseGuards(AuthGuard)
-    @Get('getUpdateBoard')
-    getUpdateBoard(@Query('boardNo') boardNo: number, @Req() req){
-        console.log("co getupdate boardNo", boardNo);
-        return this.boardsService.getUpdateBoard(boardNo, req.user);
+    @Get('getOneBoardAndFiles')
+    getOneBoardAndFiles(@Query('boardId') boardId: number): Promise<{ board: BoardsDto; files?: Files[] }> {
+        console.log("co params", boardId);
+        return this.boardsService.getOneBoardAndFiles(boardId);
     }
 
+
+
+    //get files
+    @UseGuards(AuthGuard)
+    @Get('getBoardFiles')
+    getBoardFile(@Query('boardId') boardId: number): Promise<Files[]> {
+        return this.boardsService.getBoardFiles(boardId);
+    }
 
     //if로 작성자와 로그인 한 사람이 같은지 판별
     @UseGuards(AuthGuard)
+    @UseInterceptors(
+        FilesInterceptor('file', 10, {
+            storage: diskStorage({
+                destination: '../front/public/images', // Change the destination to your desired directory
+                filename: (req, file, cb) => {
+                    const name = file.originalname.split('.')[0];
+                    const extenstion = file.originalname.split('.')[1];
+                    const savedFileName = name.split('.').join("_") + "_" + Date.now() + "." + extenstion
+                    cb(null, savedFileName);
+                },
+            }),
+        }),
+    )
     @Post('updateBoard')
-    postUpdateBoard(@Body() boardsDto: BoardsDto, @Req() req) {
-        console.log("co update",boardsDto);
-       
-        if (req.user.id !== boardsDto.users.id) {
-            return ReturnStatus.FAILURE;
+    postUpdateBoard(@Query('boardId') boardId: number, @UploadedFiles() files: Array<Express.Multer.File>, @Body() boardsDto: BoardsDto, @Req() req) {
+        console.log("co update", boardId);
+        console.log("files", files);
+        console.log("co update user", req.user);
+        console.log("co update dto", boardsDto);
 
-        } else if (req.user.id === boardsDto.id) {
-            return this.boardsService.updateBoard(boardsDto, req.user);
-        }
-       
+        return this.boardsService.updateBoard(boardsDto, req.user, files, boardId);
     }
 
     @UseGuards(AuthGuard)
     @Post('deleteBoard')
-    deleteBoard(@Query('boardNo') boardNo: number, @Req() req){
-        return this.boardsService.deleteBoard(boardNo, req.user);
+    deleteBoard(@Query('boardId') boardId: number, @Req() req) {
+        console.log("boardid", boardId);
+        return this.boardsService.deleteBoard(boardId, req.user);
     }
 
 

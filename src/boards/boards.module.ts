@@ -10,9 +10,6 @@ import { Files } from 'src/entities/files.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Users, Boards, Files]),
-    MulterModule.register({
-      dest: '../public/uploads',
-    })
 ],
   controllers: [BoardsController],
   providers: [BoardsService]

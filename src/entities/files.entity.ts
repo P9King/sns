@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { TimestampEntity } from './baseEntity/timestamp.entity';
 import { Boards } from './boards.entity';
 
@@ -17,8 +17,8 @@ export class Files extends TimestampEntity{
     @Column()
     filePath: string;
 
-    @ManyToOne(type => Boards, boards => boards.id, {eager: true, cascade: true})
+
+    @ManyToOne(type => Boards, boards => boards.files,{eager: true, onDelete: 'CASCADE'})//여기도 삭제를 위해 케스케이드 필요
+    @JoinColumn({ name: 'boardsId' })
     boards: Boards
-
-
 }

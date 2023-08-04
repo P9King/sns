@@ -1,8 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Boards } from './boards.entity';
+import { TimestampEntity } from './baseEntity/timestamp.entity';
 
 @Entity()
-export class Users {
+export class Users extends TimestampEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
