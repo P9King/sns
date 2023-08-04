@@ -1,4 +1,4 @@
-.App {
+/* .App {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -46,6 +46,11 @@
   .App-link {
     color: #61dafb;
   }
-  
-  
+   */
+  .shadow{
+    width: 750px;
+  }
+  .boarder{
+    width: 750px;
+  }
   

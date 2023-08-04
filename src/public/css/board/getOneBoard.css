@@ -1,0 +1,94 @@
+
+
+/* my css */
+.inputcontainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2em auto;
+    padding: 1em;
+    height: 100%;
+    width: 800px;
+    background: #EDEDED;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+
+}
+
+.content {
+    margin: 15px 0;
+    width: 750px;
+    height: inherit;
+    font-size: 24px;
+    background-color: #ededed;
+    text-align: center;
+}
+
+.btnDiv{
+    width: 750px;
+    display: none;
+    flex-direction: row;
+    justify-content: right;
+    margin: 100px 0 0 0;
+}
+.postBtn {
+    width: 135px;
+    height: 60px;
+    background: #2563EB;
+    border-radius: 6px;
+    margin-top: 0.5em;
+    color: #FFFFFF;
+    border-color: #2563EB;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    margin: 0 15px;
+    
+
+}
+.deleteBtn{
+    border-color: #ff3971;
+    background: #ff3971;
+    border-radius: 6px;
+    width: 135px;
+    height: 60px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    margin-top: 0.5em;
+    color: #FFFFFF;
+    margin: 0 15px;
+}
+
+.title {
+    Width: 750px;
+    Height: 30px;
+    font-weight: 900;
+    background-color: #ededed;
+    border-radius: 6px;
+    margin-top: 0.5em;
+    border-style: none;
+    color: black;
+    margin: 10px 0;
+    font-size: 26px;
+    text-align: center;
+}
+
+.files {
+    width: 750px;
+}
+
+img {
+    margin: 15px 0;
+    width: 750px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.discription{
+    font-size: 20px;
+    margin: 25px 0 0 0;
+}
+
+
+/* ----------- */

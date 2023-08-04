@@ -1,0 +1,23 @@
+.cardDiv {
+    width: 750px;
+}
+
+.barDiv {
+    width: 750px;
+}
+
+.guideLine {
+    font-size: 24px;
+}
+
+label {
+    font-size: 20px;
+}
+
+input {
+    font-size: 20px;
+}
+
+.form-control {
+    font-size: 20px;
+}

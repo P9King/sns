@@ -1,15 +1,9 @@
-.App {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 600px;
-
-}
 
 .container{
   margin: 10px auto;
-
+  display: flex;
+  flex-direction: column;
+  width: 800px;
 }
 
 .formTag{
@@ -47,4 +41,8 @@ a{
   color: #61dafb;
 }
 
-
+.boardsList{
+  margin: 15px 0;
+  width: 300px;
+  border: 1px solid black;
+}

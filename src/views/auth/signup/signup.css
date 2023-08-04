@@ -1,0 +1,14 @@
+
+.cardForm{
+    width: 750px;
+}
+.card{
+    width: 750px;
+}
+label{
+    font-size: 20px;
+}
+input{
+    font-size: 20px;
+    margin: 5px;
+}

@@ -3,19 +3,21 @@ import { Col, Button, Row, Container, Card, Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import {setToken} from '../../slices/auth/authSlice';
+import {setToken} from '../../../slices/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import './login.css';
 
 function Login() {
-  let token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  localStorage.removeItem('loginedEmail');
   localStorage.removeItem('myToken');
   
   function submitHandler(e){
     e.preventDefault();
 
+    const loginedEmail = document.querySelector('.email').value
     const payload = {
       email: document.querySelector('.email').value,
       password: document.querySelector('.password').value
@@ -27,8 +29,9 @@ function Login() {
       }else{
         dispatch(setToken(result.data));
         localStorage.setItem('myToken', result.data);
-        console.log("myTOken",localStorage.getItem('myToken'));
-        navigate('/boards/postBoard');
+        localStorage.setItem('loginedEmail', loginedEmail);
+        
+        navigate('/');
       }
     })
     
@@ -39,12 +42,12 @@ function Login() {
       <Container>
         <Row className="vh-100 d-flex justify-content-center align-items-center">
           <Col md={8} lg={6} xs={12}>
-            <div className="border border-3 border-primary"></div>
-            <Card className="shadow">
+            <div className="barDiv border border-3 border-primary"></div>
+            <Card className="shadow" style={{width: '750px'}}>
               <Card.Body>
                 <div className="mb-3 mt-md-4">
                   <h2 className="fw-bold mb-2 text-uppercase ">DudeTo</h2>
-                  <p className=" mb-5">Please enter your login and password!</p>
+                  <p className="guideLine mb-5">Please enter your login and password!</p>
                   <div className="mb-3">
                     <Form onSubmit={submitHandler}> 
                       <Form.Group className="mb-3" controlId="formBasicEmail">
