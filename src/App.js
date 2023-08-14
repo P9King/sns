@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import "./public/css/board/postBoard.css";
+import "./App.css";
 import axios from "axios";
 
 function App(props) {
@@ -19,15 +19,17 @@ function App(props) {
 
 
   return (
-    <div className="container" style={{width: '800px'}}>
+    <div className="container" style={{ width: '800px' }}>
       <h1>Bulletin Board</h1>
       {posts.map((post) => (
         <div key={post.id} className="boardsList">
-          <a href={`/boards/getOneBoard?boardId=${post.id}`} style={{ color: 'black',  textDecoration: 'none' }}>
+          <a href={`/boards/getOneBoard?boardId=${post.id}`} style={{ color: 'black', textDecoration: 'none' }}>
             <h3>{post.title}</h3>
             <p>{post.content}</p>
             <p>Author: {post.users.email}</p>
+            <p>like {post.like}</p>
             <p>Date: {post.createdAt}</p>
+
             <hr />
           </a>
         </div>

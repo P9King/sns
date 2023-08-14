@@ -1,0 +1,61 @@
+.container {
+    margin: 20px auto;
+    width: 750px;
+}
+
+.messageHistory {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 750px;
+    height: 500px;
+    overflow: auto;
+    border: 5px solid #ccc;
+    padding: 8px;
+    font-size: 18px;
+}
+
+.sentMessage {
+    text-align: end;
+    align-self: flex-end;
+    margin-bottom: 8px;
+    margin: 0;
+    background-color: cornflowerblue;
+    width: 725px;
+}
+
+.massageBox {
+    width: 750px;
+}
+
+.textareaCase {
+    width: 750px;
+    border: 1px solid black;
+    background: #ccc;
+    padding: 10px;
+}
+
+.message {
+    width: 725px;
+    border-radius: 20px;
+    font-size: 18px;
+    padding: 10px;
+    overflow: auto;
+}
+
+.textBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.sendBtn {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.messageUl {
+    margin: 0;
+    text-decoration: none;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}

@@ -32,7 +32,7 @@ function Header() {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/boards/postBoard">Post</Nav.Link>
-            <Nav.Link href="#pricing">Chat</Nav.Link>
+            <Nav.Link href="/chat/chatRoom">Chat</Nav.Link>
           </Nav>
           <Nav>
             {loginedEmail ? (
@@ -46,11 +46,7 @@ function Header() {
                 <Nav.Link href="/auth/signup">Sign up</Nav.Link>
               </>
             )}
-
-            {/* <Nav.Link href="/auth/login">Login</Nav.Link>
-            <Nav.Link eventKey={2} href="#memes">
-              Sing up
-            </Nav.Link> */}
+            
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -10,6 +10,8 @@ function GetOneBoard() {
     const [boardStatus, setBoardStatus] = useState('');
     const [files, setFiles] = useState([]);
     const navigate = useNavigate();
+    const [isToggled, setIsToggled] = useState(false);
+    const likeBtn = document.querySelector('.likeBtn');
 
     //token
     const myToken = localStorage.getItem('myToken');
@@ -21,7 +23,9 @@ function GetOneBoard() {
 
 
     const getBoardInfo = async () => {
+        const likeBtn = document.querySelector('.likeBtn');
 
+        //board info
         await axios.get(`http://localhost:4000/api/boards/getOneBoardAndFiles?${queryStringBoardId}`, {
             headers: {
                 "Authorization": "Bearer " + myToken
@@ -34,23 +38,41 @@ function GetOneBoard() {
             setFiles(result.data.files);
 
             if (loginedEmail === result.data.board.users.email) {
-                const btnDiv = document.querySelector('.btnDiv');
-                btnDiv.style.display = 'flex';
+                const postBtn = document.querySelector('.postBtn');
+                const deleteBtn = document.querySelector('.deleteBtn');
+                postBtn.style.visibility = 'visible';
+                deleteBtn.style.visibility = 'visible';
             }
 
         })
-    }
 
+        //like info
+        axios.post(`http://localhost:4000/api/boards/getOneBoardLike?${queryStringBoardId}`, {},
+        {
+            headers: {
+                "Authorization": "Bearer " + myToken
+            }
+        }).then(result => {
+            if (result.data === 'noLike' || result.data === 0 || result.data === null) {
+                setIsToggled(false);
+                console.log(isToggled);
+            }else {
+                likeBtn.style.color='red';
+                setIsToggled(true);
+                console.log(isToggled);
+            }
+        });
+    }
 
     const deleteHandler = async () => {
         if (window.confirm('are you sure you want to delete?')) {
             console.log("ASD", myToken)
-            await axios.post(`http://localhost:4000/api/boards/deleteBoard?${queryStringBoardId}`,{}, {
+            await axios.post(`http://localhost:4000/api/boards/deleteBoard?${queryStringBoardId}`, {}, {
                 headers: {
                     "Authorization": "Bearer " + myToken
                 }
             }).then(result => {
-                if (result.data === 'success'){
+                if (result.data === 'success') {
                     alert('deleted');
                     navigate('/');
                 }
@@ -58,10 +80,45 @@ function GetOneBoard() {
         }
     }
 
+    async function likeHandler() {
+        setIsToggled(!isToggled);
+        console.log("before click", isToggled);
+
+        //unlike
+        if(isToggled){
+            likeBtn.style.color = 'white';
+            console.log("unlike");
+            axios.post(`http://localhost:4000/api/boards/unLikeBoard?${queryStringBoardId}`,{},
+            {
+                headers:{
+                    "Authorization" : "Bearer "+ myToken
+                }
+            });
+        
+        //like
+        }else{ 
+            likeBtn.style.color = 'red';
+            console.log("like");
+            axios.post(`http://localhost:4000/api/boards/likeBoard?${queryStringBoardId}`,{},
+            {
+                headers:{
+                    "Authorization" : "Bearer "+ myToken
+                }
+            });
+        }
+    }
+
+    //board info
     useEffect(() => {
         getBoardInfo();
 
     }, []);
+
+    //like info
+    useEffect(() => {
+        
+    }, []);
+
 
 
     return (
@@ -77,8 +134,11 @@ function GetOneBoard() {
             </div>
             <p className="content" readOnly>{content}</p>
             <div className="btnDiv">
-                <Link to={`/boards/updateBoard?${queryStringBoardId}`}><button className="postBtn" type="button"> MODIFY</button></Link>
-                <button className="deleteBtn" type="button" onClick={deleteHandler}> DELETE</button>
+                <button type="button" className="likeBtn" onClick={likeHandler}>LIKE♡</button>
+                <div className="authBtnDiv">
+                    <Link to={`/boards/updateBoard?${queryStringBoardId}`}><button className="postBtn" type="button"> MODIFY</button></Link>
+                    <button className="deleteBtn" type="button" onClick={deleteHandler}> DELETE</button>
+                </div>
             </div>
         </div>
     );
