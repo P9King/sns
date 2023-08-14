@@ -43,7 +43,8 @@ export class AuthService {
     }
 
     //login
-    async login(userDto: UserDto): Promise<string> {
+    async login(userDto: UserDto): Promise<Array<Users|string> | ReturnStatus> {
+        const array = new Array<Users|string>();
         console.log("ser log", userDto)
         const user = await this.authRepository.findOne({where:{email: userDto.email}});
         console.log(user);
@@ -57,7 +58,9 @@ export class AuthService {
                 name : user.name
             }
             const accessToken = await this.jwtService.signAsync(userPayload);
-            return accessToken
+            array.push(user);
+            array.push(accessToken);
+            return array;
         }else {
             return ReturnStatus.FAILURE;
         }

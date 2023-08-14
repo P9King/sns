@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'ty
 import { Users } from './users.entity';
 import { TimestampEntity } from './baseEntity/timestamp.entity';
 import { Files } from './files.entity';
+import { Likes } from './likes.entity';
 
 @Entity()
 export class Boards extends TimestampEntity{
@@ -20,11 +21,17 @@ export class Boards extends TimestampEntity{
     @Column()
     file_attached: number;
 
+    @Column({ default: 0 })
+    like: number;
+
     @ManyToOne((type) => Users, (users)=> users.boards, { eager: true })
     users: Users;
 
     @OneToMany(type => Files, files => files.boards, {cascade: true})
     files: Array<Files>;
+
+    @OneToMany(type => Likes, likes => likes.boards)
+    likes: Array<Likes>;
     
 }
 

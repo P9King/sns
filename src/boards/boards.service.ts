@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BoardsDto } from 'src/dtos/boardsDto';
 import { Boards } from 'src/entities/boards.entity';
 import { Files } from 'src/entities/files.entity';
+import { Likes } from 'src/entities/likes.entity';
 import { Users } from 'src/entities/users.entity';
 import { ReturnStatus } from 'src/enum.status';
 import { Repository } from 'typeorm';
+import { BoardsModule } from './boards.module';
 
 @Injectable()
 export class BoardsService {
@@ -17,7 +19,10 @@ export class BoardsService {
         private usersRepository: Repository<Users>,
 
         @InjectRepository(Files)
-        private filesRepository: Repository<Files>
+        private filesRepository: Repository<Files>,
+
+        @InjectRepository(Likes)
+        private likesRepository: Repository<Likes>
     ) { }
 
     async postBoard(boardsDto: BoardsDto, files: Array<Express.Multer.File>) {
@@ -123,8 +128,6 @@ export class BoardsService {
             }
         })
 
-
-        console.log("filesssss  ", files);
         return files;
     }
 
@@ -161,7 +164,7 @@ export class BoardsService {
             //기존 파일 개수와 업데이트할 파일 개수가 다르면 조절 하기 불편해짐 -> 삭제하고 다시 저장하는 방식으로 채택
             //delete
             for (const deleteFiles of file) {
-               const aaa = await this.filesRepository.remove(deleteFiles);
+                const aaa = await this.filesRepository.remove(deleteFiles);
                 console.log("delete fiels ", aaa);
             }
 
@@ -181,7 +184,7 @@ export class BoardsService {
         }
     }
 
-
+    //delete
     async deleteBoard(boardNo: number, user: Users) {
         console.log("service delete", boardNo);
         const board = await this.getOneBoard(boardNo);
@@ -194,6 +197,67 @@ export class BoardsService {
         }
 
     }
+
+    //like section
+    async getOneBoardLike(boardId: number, users: Users) {
+        const board = new Boards;
+        const user = new Users;
+
+        board.id = boardId;
+        user.id = users.id;
+
+        const like = await this.likesRepository.findOne({
+            where: {
+                boards: board,
+                users: user
+            }
+        });
+        console.log("board service like ", like);
+        return like ?? 'noLike';
+    }
+
+    async likeBoard(boardId: number, users: Users) {
+        const board = new Boards;
+        const user = new Users;
+
+        board.id = boardId;
+        user.id = users.id;
+
+        const like = await this.likesRepository.save({
+            boards: board,
+            users: user
+        });
+
+        const likeUpBoard = await this.boardsRepository
+        .createQueryBuilder()
+        .update(Boards)
+        .set({ like: () => "like + 1" }) // 컬럼:을 ()=> 하겟다는것
+        .where("id = :id", { id: board.id }) //id = :id, {괄호값이 :id 안으로 들어가는것}
+        .execute();
+        console.log(like);
+    }
+
+    async unLikeBoard(boardId: number, users: Users) {
+        const board = new Boards;
+        const user = new Users;
+
+        board.id = boardId;
+        user.id = users.id;
+
+        const like = await this.likesRepository.delete({
+            boards: board,
+            users: user
+        });
+
+        const unLikeUpBoard = await this.boardsRepository
+        .createQueryBuilder()
+        .update(Boards)
+        .set({ like: () => "like - 1" }) // 컬럼:을 ()=> 하겟다는것
+        .where("id = :id", { id: board.id }) //id = :id, {괄호값이 :id 안으로 들어가는것}
+        .execute();
+        console.log(like);
+    }
+
 
 
 }

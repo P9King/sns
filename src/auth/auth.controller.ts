@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { UserDto } from 'src/dtos/userDto';
 import { ReturnStatus } from 'src/enum.status';
 import { AuthGuard } from './guards/auth.guard';
+import { Users } from 'src/entities/users.entity';
 
 
 @Controller('api/auth')
@@ -19,7 +20,7 @@ export class AuthController {
     }
 
     @Post('login')
-    login(@Body()userDto: UserDto): Promise<string> {
+    login(@Body()userDto: UserDto): Promise<Array<Users|string> | ReturnStatus> {
         console.log(userDto);
         return this.authService.login(userDto);
     }

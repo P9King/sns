@@ -10,6 +10,10 @@ import { Boards } from './entities/boards.entity';
 import { Files } from './entities/files.entity';
 import { MyPageModule } from './my-page/my-page.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { Likes } from './entities/likes.entity';
+import { ChatModule } from './chat/chat.module';
+import { ChatNames } from './entities/chatEntities/chatName.entity';
+import { ChatMessages } from './entities/chatEntities/chatMassages.entity';
 
 @Module({
   imports: [
@@ -23,7 +27,7 @@ import { MulterModule } from '@nestjs/platform-express';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Users, Boards, Files],
+      entities: [Users, Boards, Files, Likes, ChatNames, ChatMessages],
       synchronize: true,
     }),
     AuthModule,
@@ -31,7 +35,8 @@ import { MulterModule } from '@nestjs/platform-express';
     MyPageModule,
     MulterModule.register({
       dest: './src/public/uploads',
-    }),
+    }), 
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
