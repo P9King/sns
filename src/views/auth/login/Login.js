@@ -3,7 +3,7 @@ import { Col, Button, Row, Container, Card, Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setToken } from '../../../slices/auth/authSlice';
+import { setEmail, setToken } from '../../../slices/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
 
@@ -24,13 +24,16 @@ function Login() {
     }
     axios.post('http://localhost:4000/api/auth/login', payload)
       .then((result) => {
+        console.log(result.data[0].email);
         if (result.data === 'failure') {
           alert('check your email and password again');
         } else {
           dispatch(setToken(result.data[1]));
+          dispatch(setEmail(result.data[0].email))
           localStorage.setItem('myToken', result.data[1]);
           localStorage.setItem('loginedEmail', JSON.stringify(result.data[0]));
           navigate('/');
+          window.location.reload();
         }
       })
 

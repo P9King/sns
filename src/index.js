@@ -9,14 +9,12 @@ import Routing from './router/Routing';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Header />
-    <Provider store={store}>
+  <Provider store={store}>
+    <Header/>
       <Routing>
 
       </Routing>
-    </Provider>
-  </React.StrictMode>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

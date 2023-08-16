@@ -3,24 +3,32 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../slices/auth/authSlice';
 
 
 function Header() {
   const [loginedEmail, setLoginedEmail] = useState(false);
-  let loginedUserEmail;
+  const dispatch = useDispatch();
+  const email = useSelector((state) => state.auth.email); // Get the email from the Redux store
+  const loginedUserEmail = JSON.parse(localStorage.getItem('loginedEmail')); 
   
   
   //login info check
   useEffect(() => {
-    loginedUserEmail = localStorage.getItem('loginedEmail'); 
+ 
     if (loginedUserEmail) {
-      setLoginedEmail(loginedUserEmail);
+      console.log("????");
+      setLoginedEmail(true);
+    
     }
   },[loginedEmail])
 
   //log out
   function logoutHandler(){
+    dispatch(logout()); // Dispatch the logout action
     localStorage.removeItem('loginedEmail');
+    localStorage.removeItem('myToken');
   }
 
 

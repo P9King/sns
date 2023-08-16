@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import './joinRoom.css';
 import axios from 'axios';
 import { io } from 'socket.io-client';
@@ -6,59 +6,76 @@ import { io } from 'socket.io-client';
 function JoinRoom() {
   const url = window.location.href;
   const myToken = localStorage.getItem('myToken');
-  //const loginedEmail = localStorage.getItem('loginedEmail');
   const loginedEmail = JSON.parse(localStorage.getItem('loginedEmail'));
   const queryRoomName = url.split('=')[1];
   const buttonRef = useRef();
-  const [messages, setMessages] = useState([]);
-  const [data, setData] = useState({});
+  const [socketInitialized, setSocketInitialized] = useState(false);
+  const [socket, setSocket] = useState(null);
   const messageUl = useRef(null);
 
-  //socket
-  const socket = io('http://localhost:4000', {
-    extraHeaders: {
-      Authorization: `Bearer ${myToken}`,
-    },
-  });
-
-
-  //socket connection
-    socket.emit('joinRoom', queryRoomName);
-    socket.on('userJoined', (messages) => {
-      console.log("message from server " + messages);
-    });
-    //return socket.off;
-
-
-
-  //recive message
+  //socket connect 
   useEffect(() => {
-    socket.on('message', (data) => {
-      console.log("recieved message ", data);
+    if (!socketInitialized) {
+      const newSocket = io('http://localhost:4000/chat', {
+        reconnectionAttempts: 1
+      });
+      setSocket(newSocket);
+      setSocketInitialized(true);
+    }
+  }, []);
 
-      if(data.userName === loginedEmail.name){
-        let sentMessage = document.createElement('li');
-        sentMessage.classList.add('sentMessage');
-        sentMessage.textContent = `${data.message}`;
-        messageUl.current.appendChild(sentMessage);
-      }else{
-        let receiveLi = document.createElement('li');
-        receiveLi.classList.add('receivedMessage');
-        receiveLi.textContent = `${data.userName} : ${data.message}`;
-        messageUl.current.appendChild(receiveLi);
-      }
-      
-    });
+  // get chat history
+  useEffect(() => {
+    axios.post(`http://localhost:4000/api/chat/chatRoom/joinRoom?roomName=${queryRoomName}`, {})
+      .then(result => {
+        console.log("this is no from socket", result.data);
+        if (result.data === 'failure') {
 
-    // Cleanup: 소켓 이벤트 리스너 제거
-    return () => {
-      socket.off('message');
-    };
+        } else {
+          result.data.forEach(i => {
+            if (i.userName === loginedEmail.name) {
+              let sentHistory = document.createElement('li');
+              sentHistory.classList.add('sentMessage');
+              sentHistory.textContent = `${i.message}`;
+              messageUl.current.appendChild(sentHistory);
+            } else {
+              let recievedHistory = document.createElement('li');
+              recievedHistory.classList.add('receivedMessage');
+              recievedHistory.textContent = `${i.userName} : ${i.message}`;
+              messageUl.current.appendChild(recievedHistory);
+            }
+          })
+        }
+      })
+  }, []);
 
-  }, []); 
+  useEffect(() => {
+    if (socket) {
 
+      //recive message
+      socket.on('message', (data) => {
+        console.log("recieved message ", data);
 
+        if (data.userName === loginedEmail.name) {
+          let sentMessage = document.createElement('li');
+          sentMessage.classList.add('sentMessage');
+          sentMessage.textContent = `${data.message}`;
+          messageUl.current.appendChild(sentMessage);
+        } else {
+          let receiveLi = document.createElement('li');
+          receiveLi.classList.add('receivedMessage');
+          receiveLi.textContent = `${data.userName} : ${data.message}`;
+          messageUl.current.appendChild(receiveLi);
+        }
+      });
 
+      // Cleanup: 소켓 이벤트 리스너 제거
+      return () => {
+        socket.disconnect();
+        socket.off('message');
+      };
+    }
+  }, [socket]);
 
   //enter key event
   function keyDownHandler(e) {
@@ -70,14 +87,8 @@ function JoinRoom() {
 
   async function sendHandler(e) {
     e.preventDefault();
-     let message = document.querySelector('.message');
-    // let messageLi = document.createElement('li');
-
-    // messageLi.textContent = message.value + ' : ' + 'me';
-    // messageLi.classList.add('sentMessage');
-    // messageUl.current.appendChild(messageLi);
-
-    socket.emit('message', { message: message.value, roomName: queryRoomName, userName: loginedEmail.name });
+    let message = document.querySelector('.message');
+    socket.emit('message', { message: message.value, roomName: queryRoomName, userEmail: loginedEmail.email });
 
     message.value = ''.trim();
   }
@@ -97,7 +108,7 @@ function JoinRoom() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default JoinRoom
+export default JoinRoom;
