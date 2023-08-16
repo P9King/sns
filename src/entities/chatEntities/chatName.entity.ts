@@ -11,11 +11,6 @@ export class ChatNames extends TimestampEntity {
   @Column({ unique: true })
   roomName: string;
 
-
-  // @OneToMany(type => ChatRooms, chatRooms => chatRooms.chatNames)
-  // chatRooms: Array<ChatRooms>
-
-
   //many to many and join table
   @ManyToMany(type => Users, user => user.chatRooms)
   users: Array<Users>;

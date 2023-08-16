@@ -4,6 +4,7 @@ import { ReturnStatus } from 'src/enum.status';
 import { Users } from 'src/entities/users.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { ChatNames } from 'src/entities/chatEntities/chatName.entity';
+import { ChatMessages } from 'src/entities/chatEntities/chatMassages.entity';
 
 @Controller('api/chat')
 export class ChatController {
@@ -36,24 +37,16 @@ export class ChatController {
     createChatRoom(@Query('email') emails: string, @Query('roomName') roomName: string) {
         console.log('create chat room emails', emails);
         console.log('create chat room roomName', roomName);
-
+        
         return this.chatService.createChatRoom(emails, roomName);
 
     }
 
     //get chat history
     @Post('/chatRoom/joinRoom')
-    getChatHistory(@Query('roomName') roomName: string){
+    getChatHistory(@Query('roomName') roomName: string): Promise<ChatMessages[] |ReturnStatus>{
+        console.log("room name in controller ",roomName);
         return this.chatService.getChatHistory(roomName);
     }
-
-    @Post('test')
-    test(){
-
-    }
-
-
-
-
 
 }

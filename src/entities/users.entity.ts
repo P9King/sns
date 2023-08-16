@@ -3,6 +3,7 @@ import { Boards } from './boards.entity';
 import { TimestampEntity } from './baseEntity/timestamp.entity';
 import { Likes } from './likes.entity';
 import { ChatNames } from './chatEntities/chatName.entity';
+import { ChatMessages } from './chatEntities/chatMassages.entity';
 
 @Entity()
 export class Users extends TimestampEntity{
@@ -24,8 +25,8 @@ export class Users extends TimestampEntity{
     @OneToMany(type => Likes, likes => likes.users)
     likes: Array<Likes>;
 
-    // @ManyToOne(type => ChatRooms, chatRooms => chatRooms.users)
-    // chatRooms: Array<ChatRooms>;
+    @OneToMany(type => ChatMessages, chatMessages => chatMessages.users)
+    chatMessages: Array<ChatMessages>;
 
     @ManyToMany(type => ChatNames, chatNames => chatNames.users)
     @JoinTable({
