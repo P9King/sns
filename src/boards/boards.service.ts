@@ -198,7 +198,8 @@ export class BoardsService {
 
     }
 
-    //like section
+    //like section//
+    //get likes 
     async getOneBoardLike(boardId: number, users: Users) {
         const board = new Boards;
         const user = new Users;
@@ -213,9 +214,10 @@ export class BoardsService {
             }
         });
         console.log("board service like ", like);
-        return like ?? 'noLike';
+        return like ?? ReturnStatus.FAILURE;
     }
 
+    //like a board
     async likeBoard(boardId: number, users: Users) {
         const board = new Boards;
         const user = new Users;
@@ -237,6 +239,7 @@ export class BoardsService {
         console.log(like);
     }
 
+    //unlike a board
     async unLikeBoard(boardId: number, users: Users) {
         const board = new Boards;
         const user = new Users;

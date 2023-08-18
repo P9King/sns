@@ -104,19 +104,22 @@ export class BoardsController {
         return this.boardsService.deleteBoard(boardId, req.user);
     }
 
-    //like sections
+    //like sections//
+    //get like
     @UseGuards(AuthGuard)
     @Post('getOneBoardLike')
     getOneBoardLike(@Query('boardId') boardId: number, @Req() req) {
         return this.boardsService.getOneBoardLike(boardId, req.user);
     }
 
+    //like 
     @UseGuards(AuthGuard)
     @Post('likeBoard')
     likeBoard(@Query('boardId') boardId: number, @Req() req) {
         return this.boardsService.likeBoard(boardId, req.user);
     }
 
+    //unlike
     @UseGuards(AuthGuard)
     @Post('unLikeBoard')
     unLikeBoard(@Query('boardId') boardId: number, @Req() req) {

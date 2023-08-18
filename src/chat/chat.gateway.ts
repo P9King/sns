@@ -48,31 +48,15 @@ export class ChatGateway
   @SubscribeMessage('joinRoom')
   async handleRoomName(client: Socket, roomName: string): Promise<void> {
     
-    const chatRoomName  = await this.chatNamesRepository.findOne({
-      where: {
-        roomName: roomName
-      }
-    });
-    
-    const chatHistory = await this.messageRepository.find({
-      where: {
-        chatNames: chatRoomName.chatMessages
-      },
-      order: {
-        createdAt: 'ASC',
-      },
-    })
-
-    console.log('Room name received:', roomName); 
-    console.log('Room name chatHistory:', chatHistory);
     client.join(roomName); // Connect the client to the room
-    this.server.to(roomName).emit('userJoined', {chatHistory: chatHistory});
+    this.server.to(roomName).emit('userJoined', 'user joined');
   }
 
   @SubscribeMessage('message')
   async handleMessage(client: Socket,  payload: { message: string, roomName: string, userEmail: string }): Promise<void> {
     const { message, roomName, userEmail } = payload;
     console.log(message);
+    console.log("room name", roomName);
 
     //token
     //console.log("users entity ", client.handshake.auth.token);
@@ -89,6 +73,7 @@ export class ChatGateway
         roomName: roomName
       },
     });
+    console.log("chatRoomName ",chatRoomName);
 
     const chatMessage = new ChatMessages();
     chatMessage.chatNames = chatRoomName;
@@ -97,6 +82,7 @@ export class ChatGateway
     chatMessage.message = message;
 
     const save = await this.messageRepository.save(chatMessage);
+    //console.log(save);
 
     client.join(roomName);
     this.server.to(roomName).emit('message', {message: message, userName: userInfo.name});
