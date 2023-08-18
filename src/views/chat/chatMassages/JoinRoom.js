@@ -7,11 +7,13 @@ function JoinRoom() {
   const url = window.location.href;
   const myToken = localStorage.getItem('myToken');
   const loginedEmail = JSON.parse(localStorage.getItem('loginedEmail'));
-  const queryRoomName = url.split('=')[1];
+  const queryRoomName = decodeURIComponent(url.split('=')[1]);
   const buttonRef = useRef();
   const [socketInitialized, setSocketInitialized] = useState(false);
   const [socket, setSocket] = useState(null);
   const messageUl = useRef(null);
+
+  console.log(queryRoomName, "queryRoomName");
 
   //socket connect 
   useEffect(() => {

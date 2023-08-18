@@ -53,7 +53,7 @@ function GetOneBoard() {
                 "Authorization": "Bearer " + myToken
             }
         }).then(result => {
-            if (result.data === 'noLike' || result.data === 0 || result.data === null) {
+            if (result.data === 'failure' || result.data === 0 || result.data === null) {
                 setIsToggled(false);
                 console.log(isToggled);
             }else {

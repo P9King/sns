@@ -8,12 +8,15 @@ function ChatRoom() {
 
     //variable
     const myToken = localStorage.getItem('myToken');
+    const loginedEmail = JSON.parse(localStorage.getItem('loginedEmail'));
     const [modal, setModal] = useState(false);
     const addedUsers = new Set();
     const [isVisible, setIsVisible] = useState(true);
     let chatRoomName = document.querySelector('.chatRoomName');
     const [chatRooms, setChatRooms] = useState([]);
-    const [participant, setParticipant] = useState([]);
+    const [isNewChatRoom, setIsNewChatRoom] = useState(false);
+
+    console.log(loginedEmail);
 
     //modal 
     const Modal = ({ isOpen, onClose, children }) => {
@@ -75,6 +78,7 @@ function ChatRoom() {
                 alert('the room name is already taken');
             }
         })
+        setIsVisible(!isVisible);
     }
 
     //add users for chat
@@ -106,10 +110,12 @@ function ChatRoom() {
         });
     }
 
+
     function createNewChat(e) {
         e.preventDefault();
 
         const emailArray = Array.from(addedUsers); // Convert the Set to an array
+        emailArray.push(loginedEmail.email);
         console.log("addedUsers", emailArray);
         console.log("chatRoomName ??", chatRoomName.value);
         axios.post(`http://localhost:4000/api/chat/createChatRoom?roomName=${chatRoomName.value}&email=${emailArray}`, {},
@@ -118,6 +124,8 @@ function ChatRoom() {
                     "Authorization": "Bearer " + myToken
                 }
             })
+        closeModalHandler();
+        setIsNewChatRoom(!isNewChatRoom);
     }
 
     useEffect(() => {
@@ -133,7 +141,7 @@ function ChatRoom() {
                 console.log(result.data.users);
             }
         });
-    }, []);
+    }, [isNewChatRoom]);
 
 
     return (
@@ -176,7 +184,7 @@ function ChatRoom() {
                     <card key={index} className='cardBox'>
                         <Link to={`/chat/chatRoom/joinRoom?roomName=${chatRoom.roomName}`}>
                             <p className='cardTitle'>{chatRoom.roomName}</p>
-                            <p>참가인원 {chatRoom.roomName} 명</p>
+                            <p>인원 2명</p>
                         </Link>
                     </card>
                 ))}
