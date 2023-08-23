@@ -58,12 +58,36 @@ export class BoardsService {
         }
     }
 
-    //get all boards
-    async getAllBoards() {
-        const allBoards = await this.boardsRepository.find({ order: { createdAt: 'DESC' } });
+    //for paging boardId
+    async getLatestBoards(){
+        const limit = 5;
+        const latestBoards = await this.boardsRepository.createQueryBuilder('boards')
+        .select('boards')
+        .orderBy('boards.id', 'DESC')
+        .take(limit)
+        .getMany();
+        
+        console.log("last board id ? : ", latestBoards);
+        return latestBoards;
+    }
+
+   //get all boards
+    async getAllBoards(page: number, boardId: number): Promise<Boards[]>{
+        const limit = 5;
+        const skip = (page - 1) * limit;
+
+        const allBoards = await this.boardsRepository.createQueryBuilder("board")
+        .where("board.id <= :boardId", { boardId })
+        .orderBy("board.id", "DESC")
+        .take(limit) // take : 결과 집합에 포함되어야 하는 최대 레코드 수
+        .skip(skip) // offset 역할
+        .getMany();
+
+        console.log("all boards for scrolling", allBoards);
 
         return allBoards;
     }
+
 
     // get one board with files 
     async getOneBoard(boardId: number): Promise<Boards> {
@@ -113,8 +137,6 @@ export class BoardsService {
         }
         return payload;
     }
-
-
 
 
     //get files
@@ -233,8 +255,8 @@ export class BoardsService {
         const likeUpBoard = await this.boardsRepository
         .createQueryBuilder()
         .update(Boards)
-        .set({ like: () => "like + 1" }) // 컬럼:을 ()=> 하겟다는것
-        .where("id = :id", { id: board.id }) //id = :id, {괄호값이 :id 안으로 들어가는것}
+        .set({ like: () => "like + 1" })
+        .where("id = :id", { id: board.id }) 
         .execute();
         console.log(like);
     }
@@ -255,8 +277,8 @@ export class BoardsService {
         const unLikeUpBoard = await this.boardsRepository
         .createQueryBuilder()
         .update(Boards)
-        .set({ like: () => "like - 1" }) // 컬럼:을 ()=> 하겟다는것
-        .where("id = :id", { id: board.id }) //id = :id, {괄호값이 :id 안으로 들어가는것}
+        .set({ like: () => "like - 1" })
+        .where("id = :id", { id: board.id }) 
         .execute();
         console.log(like);
     }

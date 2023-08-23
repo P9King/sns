@@ -41,29 +41,27 @@ export class BoardsController {
         return this.boardsService.postBoard(boardsDto, files);
 
     }
-
-    @Get('getAllBoards')
-    getAllPost() {
-        return this.boardsService.getAllBoards();
+    
+    //for paging. get last board id
+    @Post('getLatestBoards')
+    getLastBoardId(){
+        return this.boardsService.getLatestBoards();
     }
 
-    //if you are not writter, readonly or not you can update
-    // @UseGuards(AuthGuard)
-    // @Get('getOneboard')
-    // getOneBoard(@Query('boardId') boardId: number): Promise<Boards> {
-    //     console.log("co params", boardId);
-    //     return this.boardsService.getOneBoard(boardId);
-    // }
+    //get all boards
+    @Get('getAllBoards')
+    getAllPost(@Query('page') page: number,  @Query('boardId') boardId: number): Promise<Boards[]> {
+        console.log("page : ", page, "boardId : ", boardId);
+        return this.boardsService.getAllBoards(page, boardId);
+    }
 
-
+    // get one board
     @UseGuards(AuthGuard)
     @Get('getOneBoardAndFiles')
     getOneBoardAndFiles(@Query('boardId') boardId: number): Promise<{ board: BoardsDto; files?: Files[] }> {
         console.log("co params", boardId);
         return this.boardsService.getOneBoardAndFiles(boardId);
     }
-
-
 
     //get files
     @UseGuards(AuthGuard)
@@ -87,6 +85,8 @@ export class BoardsController {
             }),
         }),
     )
+
+    //update board
     @Post('updateBoard')
     postUpdateBoard(@Query('boardId') boardId: number, @UploadedFiles() files: Array<Express.Multer.File>, @Body() boardsDto: BoardsDto, @Req() req) {
         console.log("co update", boardId);
@@ -97,6 +97,7 @@ export class BoardsController {
         return this.boardsService.updateBoard(boardsDto, req.user, files, boardId);
     }
 
+    //delete board
     @UseGuards(AuthGuard)
     @Post('deleteBoard')
     deleteBoard(@Query('boardId') boardId: number, @Req() req) {
