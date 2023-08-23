@@ -1,14 +1,20 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import axios from "axios";
 
-function App(props) {
-
+function AppCopy(props) {
+  //varibles
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [lastBoardId, setLastBoardId] = useState(false);
+
+
+  //스크롤 페이징 
+  // 1. 처음 5새 게시글 가져오기 
+  // 2.가져온 게시글 마지막 번째 아이디를 변수에저장 
+  // 3. 스크롤 하단에 닿으면 axios 실행으로 페이징 처리할 게시글가져오기
 
 
   useEffect(() => {
@@ -18,6 +24,7 @@ function App(props) {
         const lastId = response.data[response.data.length - 1];
         setPosts(response.data);
          setLastBoardId(lastId.id);
+       // loadMorePosts();
       })
   }, [])
 
@@ -88,4 +95,4 @@ function App(props) {
   );
 }
 
-export default App;
+export default AppCopy;

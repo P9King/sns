@@ -21,7 +21,7 @@ function GetOneBoard() {
     const url = window.location.href;
     const queryStringBoardId = url.split('?')[1];
 
-
+    // code
     const getBoardInfo = async () => {
         const likeBtn = document.querySelector('.likeBtn');
 
@@ -31,6 +31,7 @@ function GetOneBoard() {
                 "Authorization": "Bearer " + myToken
             }
         }).then((result) => {
+            
             console.log(result.data.files);
             setTitle(result.data.board.title);
             setContent(result.data.board.content);
@@ -44,6 +45,11 @@ function GetOneBoard() {
                 deleteBtn.style.visibility = 'visible';
             }
 
+        }).catch((error) => {
+            if (error.response.status === 401) {
+                window.location.href = '/auth/login';
+                alert('require login first');
+            }
         })
 
         //like info

@@ -18,9 +18,7 @@ function Header() {
   useEffect(() => {
  
     if (loginedUserEmail) {
-      console.log("????");
       setLoginedEmail(true);
-    
     }
   },[loginedEmail])
 

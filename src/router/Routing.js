@@ -8,6 +8,7 @@ import UpdateBoard from '../views/boards/UpdateBoard';
 import Signup from '../views/auth/signup/Signup';
 import ChatRoom from '../views/chat/chatRooms/ChatRoom';
 import JoinRoom from '../views/chat/chatMassages/JoinRoom';
+import AppCopy from '../AppCopy';
 
 
 function Routing() {
@@ -28,6 +29,8 @@ function Routing() {
         {/* chat */}
         <Route path='chat/chatRoom' element={<ChatRoom/>}/>
         <Route path='chat/chatRoom/joinRoom' element={<JoinRoom/>}/>
+
+        {/* Error */}
 
       </Routes>
     </BrowserRouter>

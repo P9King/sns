@@ -123,7 +123,8 @@ function ChatRoom() {
                 headers: {
                     "Authorization": "Bearer " + myToken
                 }
-            })
+            });
+
         closeModalHandler();
         setIsNewChatRoom(!isNewChatRoom);
     }
@@ -139,6 +140,11 @@ function ChatRoom() {
                 setChatRooms(result.data);
                 console.log(result.data);
                 console.log(result.data.users);
+            }
+        }).catch((error)=>{
+            if(error.response && error.response.status === 401){
+                window.location.href = '/auth/login';
+                alert("require login first");
             }
         });
     }, [isNewChatRoom]);
