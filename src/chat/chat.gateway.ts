@@ -1,4 +1,3 @@
-import { Req, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   SubscribeMessage,
@@ -14,28 +13,27 @@ import { ChatNames } from 'src/entities/chatEntities/chatName.entity';
 import { Users } from 'src/entities/users.entity';
 import { Repository } from 'typeorm';
 
-@WebSocketGateway({namespace: 'chat', cors:true})
+@WebSocketGateway({ namespace: 'chat', cors: true })
 export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-    constructor(
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+  constructor(
     @InjectRepository(Users)
     private authRepository: Repository<Users>,
     @InjectRepository(ChatMessages)
     private messageRepository: Repository<ChatMessages>,
     @InjectRepository(ChatNames)
-    private chatNamesRepository: Repository<ChatNames>
-    ){}
-
-
+    private chatNamesRepository: Repository<ChatNames>,
+  ) {}
 
   @WebSocketServer()
   server: Server;
 
-  afterInit(server: Server) {
+  afterInit() {
     console.log('WebSocket server initialized!');
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket) {
     if (client.connected) {
       console.log(`Client connected: ${client.id}`);
     }
@@ -47,33 +45,32 @@ export class ChatGateway
 
   @SubscribeMessage('joinRoom')
   async handleRoomName(client: Socket, roomName: string): Promise<void> {
-    
     client.join(roomName); // Connect the client to the room
     this.server.to(roomName).emit('userJoined', 'user joined');
   }
 
   @SubscribeMessage('message')
-  async handleMessage(client: Socket,  payload: { message: string, roomName: string, userEmail: string }): Promise<void> {
+  async handleMessage(
+    client: Socket,
+    payload: { message: string; roomName: string; userEmail: string },
+  ): Promise<void> {
     const { message, roomName, userEmail } = payload;
     console.log(message);
-    console.log("room name", roomName);
-
-    //token
-    //console.log("users entity ", client.handshake.auth.token);
+    console.log('room name', roomName);
 
     //DB
     const userInfo = await this.authRepository.findOne({
       where: {
-        email: userEmail
-      }
-    })
-
-    const chatRoomName  = await this.chatNamesRepository.findOne({
-      where: {
-        roomName: roomName
+        email: userEmail,
       },
     });
-    console.log("chatRoomName ",chatRoomName);
+
+    const chatRoomName = await this.chatNamesRepository.findOne({
+      where: {
+        roomName: roomName,
+      },
+    });
+    console.log('chatRoomName ', chatRoomName);
 
     const chatMessage = new ChatMessages();
     chatMessage.chatNames = chatRoomName;
@@ -85,6 +82,8 @@ export class ChatGateway
     //console.log(save);
 
     client.join(roomName);
-    this.server.to(roomName).emit('message', {message: message, userName: userInfo.name});
+    this.server
+      .to(roomName)
+      .emit('message', { message: message, userName: userInfo.name });
   }
 }
