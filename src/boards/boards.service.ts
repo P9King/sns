@@ -15,9 +15,6 @@ export class BoardsService {
     @InjectRepository(Boards)
     private boardsRepository: Repository<Boards>,
 
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
-
     @InjectRepository(Files)
     private filesRepository: Repository<Files>,
 
@@ -114,34 +111,30 @@ export class BoardsService {
     console.log('this is getBoard.files ', getBoard.files);
 
     //save board into return
-    let payload: { board: Boards; files?: Files[] } = {
+    const payload = {
       board: getBoard,
     };
-    if (getBoard.file_attached === 1) {
-      console.log('file_attached');
 
-      const files = await this.filesRepository.find({
-        where: {
-          boards: board,
-        },
-      });
-
-      console.log('filesssss?', files);
-
-      payload = {
-        ...payload,
-        files: files,
-      };
+    if (getBoard.file_attached !== 1) {
       return payload;
     }
-    return payload;
+
+    const files = await this.filesRepository.find({
+      where: {
+        boards: board,
+      },
+    });
+
+    return {
+      ...payload,
+      files: files,
+    };
   }
 
   //get files
   async getBoardFiles(boardId: number): Promise<Files[]> {
     const board = new Boards();
     board.id = boardId;
-    console.log('이거 작동함?');
     const files = await this.filesRepository.find({
       where: {
         boards: board,
@@ -159,15 +152,9 @@ export class BoardsService {
   ) {
     const board = await this.getOneBoard(boardId);
 
-    console.log('wrtier', board.users.id);
-    console.log('login user info', userInfo.id);
-
-    //prevent qery hacking
     if (board.users.id !== userInfo.id) {
       return ReturnStatus.FAILURE;
     }
-
-    console.log('writer and user is same person');
 
     board.id = boardId;
     board.title = boarsdDto.title;
@@ -176,52 +163,39 @@ export class BoardsService {
     board.users = userInfo;
 
     await this.boardsRepository.update({ id: board.id }, board);
-
-    //file
-    // board id for finding files info
     const boardIdForFile = new Boards();
     boardIdForFile.id = boardId;
-    const file = await this.filesRepository.find({
+    const deleteFiles = await this.filesRepository.find({
       where: {
         boards: boardIdForFile,
       },
     });
 
-    //기존 파일 개수와 업데이트할 파일 개수가 다르면 조절 하기 불편해짐 -> 삭제하고 다시 저장하는 방식으로 채택
-    //delete
-    for (const deleteFiles of file) {
-      const aaa = await this.filesRepository.remove(deleteFiles);
-      console.log('delete fiels ', aaa);
-    }
+    // 기존 파일 개수와 업데이트할 파일 개수가 다르면 조절 하기 불편해짐 -> 삭제하고 다시 저장하는 방식으로 채택
+    const deleteFileIds = deleteFiles.map((date) => date.id);
+    await this.filesRepository.delete(deleteFileIds);
 
-    //save
-    for (const fileData of files) {
-      const filesForUpdate = new Files();
-      filesForUpdate.originalName = fileData.originalname;
-      filesForUpdate.storedName = fileData.filename;
-      filesForUpdate.filePath = fileData.destination;
-      filesForUpdate.boards = boardIdForFile;
-      const aa = await this.filesRepository.save(filesForUpdate);
-      console.log('file updateed??', aa);
-    }
+    await this.filesRepository.save(files as any[]);
+
     return ReturnStatus.SUCCESS;
   }
 
   //delete
   async deleteBoard(boardNo: number, user: Users) {
-    console.log('service delete', boardNo);
     const board = await this.getOneBoard(boardNo);
 
-    if (board.users.id === user.id) {
-      const result = await this.boardsRepository.remove(board);
-      return ReturnStatus.SUCCESS;
-    } else {
+    if (board.users.id !== user.id) {
       return ReturnStatus.FAILURE;
     }
+
+    const deleteResult = await this.boardsRepository.delete(board.id);
+
+    return deleteResult.raw;
   }
 
-  //like section//
-  //get likes
+  /**
+   * like board
+   */
   async getOneBoardLike(boardId: number, users: Users) {
     const board = new Boards();
     const user = new Users();
@@ -245,7 +219,7 @@ export class BoardsService {
     board.id = boardId;
     user.id = users.id;
 
-    const like = await this.likesRepository.save({
+    await this.likesRepository.save({
       boards: board,
       users: user,
     });
@@ -279,6 +253,7 @@ export class BoardsService {
       .set({ like: () => 'like - 1' })
       .where('id = :id', { id: board.id })
       .execute();
-    console.log(like);
+
+    return unLikeUpBoard.raw;
   }
 }
