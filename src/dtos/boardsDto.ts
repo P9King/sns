@@ -1,17 +1,16 @@
-import { BoardStatus } from "src/entities/boards.entity";
-import { Users } from "src/entities/users.entity";
+import { BoardStatus } from 'src/entities/boards.entity';
+import { Users } from 'src/entities/users.entity';
 
-export class BoardsDto{
-    id: number;
+export class BoardsDto {
+  id: number;
 
-    title: string;
+  title: string;
 
-    content: string;
+  content: string;
 
-    status: BoardStatus;
+  status: BoardStatus;
 
-    file_attached: number;
+  file_attached: number;
 
-    users: Users;
-    
+  users: Users;
 }
